@@ -1,28 +1,31 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
 
-class App extends Component {
+class ListItem extends Component {
+  deleteTask(name) {
+    this.props.deleteItem(name)
+  }
+  completeTask(name) {
+    this.props.completeTask(name)
+  }
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+      <ul>
+        {
+          this.props.data.map(element => {
+            return (
+              <li className="listItem" key={element.name}>
+                <input type="checkbox"
+                  checked={element.status === 1}
+                  onChange={this.completeTask.bind(this, element.name)}/>
+                <span style={{textDecorationLine: element.status === 0 ? 'none' : 'line-through'}}>{element.name}</span>
+                <button className="delete" onClick={this.deleteTask.bind(this, element.name)}>删除</button>
+              </li>)
+        })
+      }
+      </ul>
+    )
   }
 }
 
-export default App;
+export default ListItem
