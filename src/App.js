@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import './App.css'
-
+import { fetchTask, completeTask } from './action/todoListAction'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 class ListItem extends Component {
-  deleteTask(name) {
-    this.props.deleteItem(name)
+
+  componentDidMount() {
+    window.console.info('did')
+    this.props.fetchTask()
   }
   completeTask(name) {
     this.props.completeTask(name)
@@ -12,14 +16,14 @@ class ListItem extends Component {
     return (
       <ul>
         {
-          this.props.data.map(element => {
+          this.props.list.map(element => {
             return (
               <li className="listItem" key={element.name}>
                 <input type="checkbox"
-                  checked={element.status === 1}
+                  checked={element.status}
                   onChange={this.completeTask.bind(this, element.name)}/>
-                <span style={{textDecorationLine: element.status === 0 ? 'none' : 'line-through'}}>{element.name}</span>
-                <button className="delete" onClick={this.deleteTask.bind(this, element.name)}>删除</button>
+                <span style={{textDecorationLine: !element.status ? 'none' : 'line-through'}}>{element.name}</span>
+                <button className="delete">删除</button>
               </li>)
         })
       }
@@ -27,5 +31,11 @@ class ListItem extends Component {
     )
   }
 }
+ListItem.propTypes = {
+  list: PropTypes.array.isRequired
+}
+const mapStateToProps = (state) => ({
+  list: state.todoListReducer.list
+})
 
-export default ListItem
+export default connect(mapStateToProps, {fetchTask, completeTask})(ListItem)
